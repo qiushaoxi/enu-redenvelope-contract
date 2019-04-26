@@ -4,6 +4,7 @@
 #include <enulib/currency.hpp>
 
 #define ENU_SYMBOL S(4, ENU)
+#define INCOME_ACCOUNT N(mydappincome)
 
 using namespace enumivo;
 using namespace std;

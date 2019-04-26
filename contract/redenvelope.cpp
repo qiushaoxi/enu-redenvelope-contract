@@ -64,7 +64,7 @@ void RedEnvelope::transfer(const account_name from, const account_name to, const
     uint64_t envelope_id = std::stoull((splits[1]).c_str());
     //print("\nid:");
     //print(envelope_id);
-    uint8_t num = atoi((splits[2]).c_str());
+    uint64_t num = atoi((splits[2]).c_str());
     string words = splits[3];
     string public_key = splits[4];
 
@@ -72,7 +72,7 @@ void RedEnvelope::transfer(const account_name from, const account_name to, const
     enumivo_assert(quantity.is_valid(), "transfer invalid quantity");
 
     enumivo_assert(quantity.amount >= 10000, "amount must >= 1 ENU");
-    enumivo_assert(num <= 100, "envolopes number must <= 100");
+    enumivo_assert(num <= 1000, "envolopes number must <= 1000");
     enumivo_assert(num >= 1, "red envelope numbers must >= 1");
 
     //enumivo_assert(quantity.amount <= MAX, "amount must <= 2000 ENU");
@@ -251,6 +251,14 @@ void RedEnvelope::reveal(const uint64_t envelope_id, const account_name user, co
     {
         memo = "get red envelope from " + creator + "," + words;
         transfer_to = user;
+
+        //fee
+        auto fee_amount = this_amount / 100;
+        this_amount = this_amount - fee_amount;
+
+        //send income to account
+        action(permission_level{_self, N(active)}, N(enu.token), N(transfer), std::make_tuple(_self, INCOME_ACCOUNT, asset(fee_amount, ENU_SYMBOL), string("red envelope fee")))
+            .send();
     }
     else
     {
