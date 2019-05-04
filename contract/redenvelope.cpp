@@ -254,6 +254,10 @@ void RedEnvelope::reveal(const uint64_t envelope_id, const account_name user, co
 
         //fee
         auto fee_amount = this_amount / 100;
+        if (fee_amount <= 0)
+        {
+            fee_amount = 1;
+        }
         this_amount = this_amount - fee_amount;
 
         //send income to account
